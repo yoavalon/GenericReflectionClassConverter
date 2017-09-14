@@ -1,20 +1,18 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Reflection;
 
-
-namespace ReflectionClassConverter
+namespace ConsoleApplication47
 {
-    class ReflectionClassConv
+    class Program
     {
-        static Target ConvertClass(Source sourceInstance)
+        static Target ConvertClass<Source, Target>(Source sourceInstance) where Target : new()
         {
             Target targetInstance = new Target();
 
-            var SourceFields = typeof(Source).GetProperties(); 
+            var SourceFields = typeof(Source).GetProperties();
             var TargetFields = typeof(Target).GetProperties();
 
             try
@@ -23,7 +21,7 @@ namespace ReflectionClassConverter
                 {
                     foreach (var targetItem in TargetFields)
                     {
-                        if(sourceItem.Name == targetItem.Name)
+                        if (sourceItem.Name == targetItem.Name)
                         {
                             targetItem.SetValue(targetInstance, sourceItem.GetValue(sourceInstance));
                         }
@@ -38,10 +36,11 @@ namespace ReflectionClassConverter
             return targetInstance;
         }
 
+
         static void Main(string[] args)
         {
-            Source sourceInstance = new Source() { MyProperty = 1, MyProperty2 = 2, MyProperty3 = 3};
-            Target TargetResult = ConvertClass(sourceInstance);
+            First sourceInstance = new First() { MyProperty = 1, MyProperty2 = 2, MyProperty3 = 3 };
+            Second TargetResult = ConvertClass<First, Second>(sourceInstance);
 
             Console.WriteLine(TargetResult.MyProperty);
             Console.WriteLine(TargetResult.MyProperty2);
@@ -52,15 +51,14 @@ namespace ReflectionClassConverter
         }
     }
 
-
-    class Source
+    class First
     {
         public int MyProperty { get; set; }
         public int MyProperty2 { get; set; }
         public int MyProperty3 { get; set; }
     }
 
-    class Target
+    class Second
     {
         public int MyProperty { get; set; }
         public int MyProperty2 { get; set; }
